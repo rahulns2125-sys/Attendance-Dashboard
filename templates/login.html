@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AttendX — Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:      #080c14;
+      --surface: #0d1422;
+      --card:    #111927;
+      --border:  #1e2d45;
+      --accent:  #00d4ff;
+      --accent2: #7c3aed;
+      --safe:    #10b981;
+      --crit:    #ef4444;
+      --text:    #e2e8f0;
+      --muted:   #64748b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Animated mesh background */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 15% 25%, rgba(0,212,255,.08) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 70%, rgba(124,58,237,.09) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 50% 50%, rgba(16,185,129,.05) 0%, transparent 60%);
+    }
+
+    /* Floating grid lines */
+    body::after {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(rgba(0,212,255,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    .login-wrap {
+      position: relative; z-index: 1;
+      display: flex; align-items: stretch;
+      width: 900px; max-width: 96vw;
+      border-radius: 24px; overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 32px 80px rgba(0,0,0,.6);
+      animation: popIn .5s cubic-bezier(.16,1,.3,1);
+    }
+    @keyframes popIn { from { opacity:0; transform:scale(.94) translateY(20px); } to { opacity:1; transform:none; } }
+
+    /* Left panel */
+    .left-panel {
+      flex: 1;
+      background: linear-gradient(135deg, #0a1628 0%, #0d1f3c 50%, #0f1729 100%);
+      padding: 56px 48px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      position: relative; overflow: hidden;
+    }
+    .left-panel::before {
+      content: '';
+      position: absolute; width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(0,212,255,.12), transparent 70%);
+      top: -60px; left: -60px; border-radius: 50%;
+    }
+    .left-panel::after {
+      content: '';
+      position: absolute; width: 250px; height: 250px;
+      background: radial-gradient(circle, rgba(124,58,237,.1), transparent 70%);
+      bottom: -40px; right: -40px; border-radius: 50%;
+    }
+
+    .brand { position: relative; z-index: 1; }
+    .brand-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 36px; font-weight: 800; letter-spacing: -1px;
+      background: linear-gradient(135deg, var(--accent), #a78bfa);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .brand-tagline { color: var(--muted); font-size: 13px; margin-top: 4px; letter-spacing: .5px; }
+
+    .left-features { position: relative; z-index: 1; }
+    .feature-item { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 24px; }
+    .feature-icon {
+      width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 18px;
+    }
+    .fi-blue   { background: rgba(0,212,255,.12); }
+    .fi-purple { background: rgba(124,58,237,.12); }
+    .fi-green  { background: rgba(16,185,129,.12); }
+    .fi-amber  { background: rgba(245,158,11,.12); }
+    .feature-text strong { display: block; color: var(--text); font-size: 14px; font-weight: 600; }
+    .feature-text span   { color: var(--muted); font-size: 12px; }
+
+    .left-footer { position: relative; z-index: 1; color: var(--muted); font-size: 12px; }
+    .left-footer strong { display: block; color: var(--text); margin-bottom: 2px; }
+
+    /* Right panel (form) */
+    .right-panel {
+      width: 380px; flex-shrink: 0;
+      background: var(--card);
+      padding: 52px 40px;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+
+    .form-heading {
+      font-family: 'Syne', sans-serif;
+      font-size: 24px; font-weight: 800; margin-bottom: 4px; letter-spacing: -.5px;
+    }
+    .form-heading span { color: var(--accent); }
+    .form-subhead { color: var(--muted); font-size: 13px; margin-bottom: 32px; }
+
+    .form-group { margin-bottom: 18px; }
+    .form-label { display: block; font-size: 11px; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--muted); margin-bottom: 7px; }
+    .form-input {
+      width: 100%; background: var(--surface); border: 1px solid var(--border);
+      color: var(--text); border-radius: 10px; padding: 12px 16px;
+      font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .form-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(0,212,255,.1);
+    }
+    .form-input::placeholder { color: #334155; }
+
+    .btn-login {
+      width: 100%; padding: 13px;
+      background: linear-gradient(135deg, var(--accent), #0ea5e9);
+      color: #000; font-family: 'Syne', sans-serif;
+      font-size: 15px; font-weight: 700; letter-spacing: .3px;
+      border: none; border-radius: 10px; cursor: pointer;
+      transition: all .2s; margin-top: 8px;
+    }
+    .btn-login:hover { opacity: .9; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,212,255,.3); }
+    .btn-login:active { transform: none; }
+
+    .error-box {
+      background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3);
+      color: #fca5a5; border-radius: 8px; padding: 10px 14px;
+      font-size: 13px; margin-bottom: 18px; display: flex; align-items: center; gap: 8px;
+    }
+
+    .demo-creds {
+      margin-top: 28px; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 14px 16px;
+    }
+    .demo-creds-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 10px; }
+    .cred-row {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 12px; padding: 4px 0; cursor: pointer;
+      border-bottom: 1px solid rgba(30,45,69,.5);
+    }
+    .cred-row:last-child { border-bottom: none; }
+    .cred-row:hover .cred-user { color: var(--accent); }
+    .cred-user  { font-weight: 600; color: var(--text); }
+    .cred-pass  { color: var(--muted); font-family: monospace; }
+    .cred-role  { font-size: 10px; background: rgba(0,212,255,.1); color: var(--accent); padding: 2px 8px; border-radius: 20px; }
+
+    @media (max-width: 700px) {
+      .left-panel { display: none; }
+      .right-panel { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+<div class="login-wrap">
+
+  <!-- Left decorative panel -->
+  <div class="left-panel">
+    <div class="brand">
+      <div class="brand-logo">AttendX</div>
+      <div class="brand-tagline">Digital Attendance Analytics Dashboard</div>
+    </div>
+
+    <div class="left-features">
+      <div class="feature-item">
+        <div class="feature-icon fi-blue">📊</div>
+        <div class="feature-text">
+          <strong>Real-time Analytics</strong>
+          <span>Live attendance tracking with interactive charts</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon fi-purple">🎓</div>
+        <div class="feature-text">
+          <strong>Student Management</strong>
+          <span>Monitor 10 students across 6 subjects</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon fi-green">🔔</div>
+        <div class="feature-text">
+          <strong>Smart Alerts</strong>
+          <span>Auto-detect students below 75% threshold</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon fi-amber">📄</div>
+        <div class="feature-text">
+          <strong>Detailed Reports</strong>
+          <span>Semester leaderboards and subject breakdowns</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="left-footer">
+      <strong>MCA 3rd Semester Project</strong>
+      Department of Computer Applications
+    </div>
+  </div>
+
+  <!-- Right login form -->
+  <div class="right-panel">
+    <div class="form-heading">Welcome <span>Back</span></div>
+    <div class="form-subhead">Sign in to access the dashboard</div>
+
+    {% if error %}
+    <div class="error-box">⚠️ {{ error }}</div>
+    {% endif %}
+
+    <form method="POST" action="/login">
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input class="form-input" type="text" name="username" placeholder="Enter username" required autofocus/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" type="password" name="password" placeholder="Enter password" required/>
+      </div>
+      <button type="submit" class="btn-login">🔐 Sign In</button>
+    </form>
+
+    <!-- Demo credentials -->
+    <div class="demo-creds">
+      <div class="demo-creds-title">🔑 Demo Credentials (click to fill)</div>
+      <div class="cred-row" onclick="fillCreds('admin','admin123')">
+        <span class="cred-user">admin</span>
+        <span class="cred-pass">admin123</span>
+        <span class="cred-role">Admin</span>
+      </div>
+      <div class="cred-row" onclick="fillCreds('faculty','faculty123')">
+        <span class="cred-user">faculty</span>
+        <span class="cred-pass">faculty123</span>
+        <span class="cred-role">Faculty</span>
+      </div>
+      <div class="cred-row" onclick="fillCreds('hod','hod123')">
+        <span class="cred-user">hod</span>
+        <span class="cred-pass">hod123</span>
+        <span class="cred-role">HOD</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function fillCreds(user, pass) {
+  document.querySelector('input[name="username"]').value = user;
+  document.querySelector('input[name="password"]').value = pass;
+}
+</script>
+</body>
+</html>
